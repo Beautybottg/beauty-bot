@@ -26,9 +26,13 @@ from telegram.ext import (
 from telegram.constants import ParseMode
 
 # ========== НАСТРОЙКИ ==========
+from dotenv import load_dotenv
 import os
-TOKEN = os.environ.get("8058974826:AAHy1iYv34O3xhB_vj6h6a0Ryme2a0OKEio")  # Замените на ваш токен!
-ADMIN_IDS = [651764371]  # Замените на ваш ID администратора (узнать через @userinfobot)
+
+load_dotenv()  # Загружаем переменные из .env
+
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+ADMIN_IDS = [int(id.strip()) for id in os.getenv("ADMIN_IDS", "").split(",") if id.strip()]
 
 # Настройка логирования
 logging.basicConfig(
@@ -899,4 +903,5 @@ def main():
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
+
     main()
