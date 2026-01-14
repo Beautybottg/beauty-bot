@@ -1,0 +1,27 @@
+name: Deploy Beauty Bot
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Yandex Container Registry
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build and Push Docker Image
+        run: |
+          # Замени <ID_РЕЕСТРА> на ID из твоего Container Registry
+          docker build -t cr.yandex/${{ secrets.YC_REGISTRY_ID }}/beauty-bot:${{ github.sha }} .
+          docker push cr.yandex/${{ secrets.YC_REGISTRY_ID }}/beauty-bot:${{ github.sha }}
+
+      - name: Deploy Variable Update
+        run: |
+          # Эта команда скажет Яндексу использовать новый образ
+          # (Для полной автоматизации тут обычно используется yc cli)
